@@ -15,8 +15,8 @@
 <body>
 
     <div class="box">
-        <h2>🎨 พิมพ์คำสั่งสร้างรูป</h2>
-        <input type="text" id="prompt" placeholder="เช่น: a futuristic city">
+        <h2>🎨 ค้นหารูปภาพด่วน</h2>
+        <input type="text" id="prompt" placeholder="เช่น: girl, cat, city">
         <button onclick="generate()">สร้างรูป ✨</button>
         
         <div id="result">
@@ -31,17 +31,16 @@
             
             if (!promptInput) return alert("กรุณาพิมพ์ข้อความก่อน!");
 
-            resultDiv.innerHTML = `<p id="status">กำลังวาดรูป...รอแป๊บนึงนะ</p>`;
+            resultDiv.innerHTML = `<p id="status">กำลังค้นหารูป...รอแป๊บนึงนะ</p>`;
             
-            // แก้ไขจุดนี้: ใส่ / หลังโดเมน และใส่ $ หน้าปีกกา {encode...}
-            const seed = Math.floor(Math.random() * 1000000);
-            const imageUrl = `https://image.pollinations.ai{encodeURIComponent(promptInput)}?width=1024&height=1024&seed=${seed}&nologo=true`;
+            // เปลี่ยนมาใช้ Source Unsplash แทน เพราะเสถียรกว่าและไม่โดนบล็อกง่ายๆ
+            const imageUrl = `https://source.unsplash.com{encodeURIComponent(promptInput)}&sig=${Math.floor(Math.random() * 1000)}`;
 
             const img = new Image();
             img.src = imageUrl;
             
             img.onload = () => {
-                resultDiv.innerHTML = `<img src="${imageUrl}" alt="AI Generated Image">`;
+                resultDiv.innerHTML = `<img src="${imageUrl}" alt="Generated Image">`;
             };
 
             img.onerror = () => {
