@@ -2,49 +2,54 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>AI Image Quick Tool</title>
+    <title>AI Image Quick Tool - Test Version</title>
     <style>
         body { font-family: sans-serif; text-align: center; background: #1a1a1a; color: white; padding: 20px; }
-        .box { background: #333; padding: 20px; border-radius: 15px; display: inline-block; }
-        input { padding: 10px; width: 250px; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; background: #00d4ff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: #000; }
-        #result { margin-top: 20px; width: 400px; height: 400px; background: #000; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid #444; }
-        img { width: 100%; height: 100%; object-fit: cover; }
+        .box { background: #333; padding: 20px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        input { padding: 12px; width: 250px; border-radius: 5px; border: none; outline: none; }
+        button { padding: 12px 25px; background: #00d4ff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: #000; transition: 0.3s; }
+        button:hover { background: #009dbd; }
+        #result { margin-top: 20px; width: 400px; height: 400px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px dashed #555; }
+        img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div class="box">
-        <h2>🎨 ค้นหารูปภาพด่วน</h2>
-        <input type="text" id="prompt" placeholder="เช่น: girl, cat, city">
-        <button onclick="generate()">สร้างรูป ✨</button>
+        <h2>🎨 ตัวทดสอบสร้างรูป</h2>
+        <input type="text" id="prompt" placeholder="พิมพ์อะไรก็ได้ เช่น cat, dog">
+        <button onclick="generate()">ลองรัน ✨</button>
         
         <div id="result">
-            <p id="status">รูปจะแสดงตรงนี้</p>
+            <p id="status">รูปจะแสดงตรงนี้ครับ</p>
         </div>
     </div>
 
     <script>
         function generate() {
-            const promptInput = document.getElementById('prompt').value;
+            const prompt = document.getElementById('prompt').value;
             const resultDiv = document.getElementById('result');
-            
-            if (!promptInput) return alert("กรุณาพิมพ์ข้อความก่อน!");
 
-            resultDiv.innerHTML = `<p id="status">กำลังค้นหารูป...รอแป๊บนึงนะ</p>`;
-            
-            // เปลี่ยนมาใช้ Source Unsplash แทน เพราะเสถียรกว่าและไม่โดนบล็อกง่ายๆ
-            const imageUrl = `https://source.unsplash.com{encodeURIComponent(promptInput)}&sig=${Math.floor(Math.random() * 1000)}`;
+            if (!prompt) return alert("กรุณาพิมพ์ข้อความก่อน!");
 
+            // แสดงสถานะระหว่างโหลด
+            resultDiv.innerHTML = `<p style="color:#00d4ff;">กำลังโหลดรูปภาพ...</p>`;
+            
+            // ใช้ Lorem Picsum เป็นที่ดึงรูปทดสอบ (เสถียรที่สุด)
+            // เราสุ่มรูปใหม่ทุกครั้งด้วยการใส่ค่าเลขสุ่ม (seed) ต่อท้าย
+            const randomID = Math.floor(Math.random() * 1000);
+            const imageUrl = `https://picsum.photos{randomID}/1024/1024`;
+
+            // สร้างรูป
             const img = new Image();
             img.src = imageUrl;
             
             img.onload = () => {
-                resultDiv.innerHTML = `<img src="${imageUrl}" alt="Generated Image">`;
+                resultDiv.innerHTML = `<img src="${imageUrl}">`;
             };
 
             img.onerror = () => {
-                resultDiv.innerHTML = `<p id="status">เกิดข้อผิดพลาด ลองใหม่อีกครั้ง</p>`;
+                resultDiv.innerHTML = `<p style="color:red;">ไม่สามารถโหลดรูปได้ ลองเปลี่ยนเน็ตดูครับ</p>`;
             };
         }
     </script>
