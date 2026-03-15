@@ -7,7 +7,7 @@
         body { font-family: sans-serif; text-align: center; background: #1a1a1a; color: white; padding: 20px; }
         .box { background: #333; padding: 20px; border-radius: 15px; display: inline-block; }
         input { padding: 10px; width: 250px; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; background: #00d4ff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button { padding: 10px 20px; background: #00d4ff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: #000; }
         #result { margin-top: 20px; width: 400px; height: 400px; background: #000; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid #444; }
         img { width: 100%; height: 100%; object-fit: cover; }
     </style>
@@ -16,7 +16,6 @@
 
     <div class="box">
         <h2>🎨 พิมพ์คำสั่งสร้างรูป</h2>
-        <!-- ช่องกรอกข้อความ -->
         <input type="text" id="prompt" placeholder="เช่น: a futuristic city">
         <button onclick="generate()">สร้างรูป ✨</button>
         
@@ -27,28 +26,26 @@
 
     <script>
         function generate() {
-            const prompt = document.getElementById('prompt').value;
+            const promptInput = document.getElementById('prompt').value;
             const resultDiv = document.getElementById('result');
-            const status = document.getElementById('status');
-
-            if (!prompt) return alert("กรุณาพิมพ์ข้อความก่อน!");
-
-            status.innerText = "กำลังวาดรูป...รอแป๊บนึงนะ";
             
-            // สร้าง URL ตามรูปแบบที่คุณให้มา (เปลี่ยนคำว่า man เป็น prompt ที่เราพิมพ์)
-            // หมายเหตุ: model=midijourney เป็นการแต่งชื่อให้ดูเท่ๆ ของ Pollinations
-            const imageUrl = `https://gen.pollinations.ai{encodeURIComponent(prompt)}?model=midijourney&width=1024&height=1024&seed=${Math.floor(Math.random()*1000)}`;
+            if (!promptInput) return alert("กรุณาพิมพ์ข้อความก่อน!");
 
-            // สร้าง Tag <img> ใหม่เพื่อโหลดรูป
+            resultDiv.innerHTML = `<p id="status">กำลังวาดรูป...รอแป๊บนึงนะ</p>`;
+            
+            // แก้ไขจุดนี้: ใส่ / หลังโดเมน และใส่ $ หน้าปีกกา {encode...}
+            const seed = Math.floor(Math.random() * 1000000);
+            const imageUrl = `https://image.pollinations.ai{encodeURIComponent(promptInput)}?width=1024&height=1024&seed=${seed}&nologo=true`;
+
             const img = new Image();
             img.src = imageUrl;
             
             img.onload = () => {
-                resultDiv.innerHTML = `<img src="${imageUrl}">`;
+                resultDiv.innerHTML = `<img src="${imageUrl}" alt="AI Generated Image">`;
             };
 
             img.onerror = () => {
-                status.innerText = "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง";
+                resultDiv.innerHTML = `<p id="status">เกิดข้อผิดพลาด ลองใหม่อีกครั้ง</p>`;
             };
         }
     </script>
